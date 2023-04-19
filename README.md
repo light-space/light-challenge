@@ -29,13 +29,14 @@ Send an approval request to the marketing team manager if the following constrai
 - ensure the application supports two ways to give an approval:
     - Slack
     - Email
-    - both of these channels should be mocked, i.e. `println("sending approval via Slack")` is all that is needed
-- it should be possible to run the application via CLI, by passing invoice amount, department and if a manager approval is required as input fields. 
+    - both of these channels should be mocked, i.e. `println("sending approval via Slack")` is enough
+
+- expose a REST API to execute the workflow, it should be possible to execute it by passing invoice amount, department and if a manager approval is required as input fields
+- implement a simple UI to execute the workflow defined above
 
 Few requirements to consider about the input fields:
     - amount are expressed in USD (no need to support multiple currencies, or even introduce a concept of a currency)
     - the departments to be supported are **Finance** and **Marketing**
-- insert the workflow in fig.1 into the database before the solution is handed off
 
 ![code_exercise_diagram (2)](https://user-images.githubusercontent.com/112865589/191920630-6c4e8f8e-a8d9-42c2-b31e-ab2c881ed297.jpg)
 
@@ -49,7 +50,20 @@ While designing and implementing the solution the candidate must consider the fo
 ### We are providing a basic framework and libraries with the challenge, as well as the placeholders in the code for candidates to fill. However, both is just a suggestion, and you're welcome to use a different structure!
 
 ### How to build & run
+
+## Backend
+
 ```sh
+cd backend
 ./gradlew clean build
 ./gradlew run
 ```
+
+## Frontend
+
+```sh
+cd frontend
+npm install
+npm run dev
+```
+
