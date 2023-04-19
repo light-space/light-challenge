@@ -1,1 +1,0 @@
-/Users/tiagohngl/workspace/light-challenge/backend/challenge-core/build/classes/kotlin/main/org/light/challenge/logic/core/WorkflowService.class
