@@ -1,0 +1,1 @@
+/Users/tiagohngl/workspace/light-challenge/backend/buildSrc/build/classes/kotlin/main/Libraries.class
