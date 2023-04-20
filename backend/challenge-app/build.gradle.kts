@@ -27,4 +27,5 @@ dependencies {
 
     // Dropwizard
     implementation(Libraries.dropwizard_core)
+    implementation(Libraries.jackson_kotlin)
 }
