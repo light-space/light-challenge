@@ -47,7 +47,9 @@ While designing and implementing the solution the candidate must consider the fo
 1. Each company will be able to define **only** one workflow. Each new invoice will go through that workflow.
 2. A company should be able to modify their workflow at any point, e.g. when the **current** version of the workflow is in action.
 
-### We are providing a basic framework and libraries with the challenge, as well as the placeholders in the code for candidates to fill. However, both is just a suggestion, and you're welcome to use a different structure!
+### We provide a basic backend setup in Kotlin, as well as placeholders in the code for you to fill. This is just a suggestion, and you're welcome to use a different structure and/or language.
+
+### You are free to choose any OO language to implement the challenge. If you want to use Java or Kotlin you can use the current backend setup we provide, otherwise feel free to delete everything inside the `backend` folder and use the libraries and framework of your choosing.
 
 ### How to build & run
 
