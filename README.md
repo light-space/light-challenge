@@ -47,11 +47,13 @@ While designing and implementing the solution the candidate must consider the fo
 1. Each company will be able to define **only** one workflow. Each new invoice will go through that workflow.
 2. A company should be able to modify their workflow at any point, e.g. when the **current** version of the workflow is in action.
 
-### We are providing a basic framework and libraries with the challenge, as well as the placeholders in the code for candidates to fill. However, both is just a suggestion, and you're welcome to use a different structure!
+### We are providing a basic framework and libraries with the challenge in Kotlin, as well as the placeholders in the code for candidates to fill. However, both is just a suggestion, and you're welcome to use a different structure!
+
+### The candidate is free to choose any other OO language to implement the solution as well, but then the candidate needs to do the app setup as well - Light is not providing the base of framework or the libraries.
 
 ### How to build & run
 
-## Backend
+## Backend in Kotlin
 
 ```sh
 cd backend
