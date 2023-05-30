@@ -49,7 +49,7 @@ While designing and implementing the solution the candidate must consider the fo
 
 ### We are providing a basic framework and libraries with the challenge in Kotlin, as well as the placeholders in the code for candidates to fill. However, both is just a suggestion, and you're welcome to use a different structure!
 
-### The candidate is free to choose any other OO language to implement the solution as well, but then the candidate needs to do the app setup as well - Light is not providing the base of framework or the libraries.
+### You are free to choose any OO language to implement the challenge. If you want to use Java or Kotlin you can use the current backend setup we provide, otherwise feel free to delete everything inside the `backend` folder and use the libraries and framework of your choosing.
 
 ### How to build & run
 
