@@ -15,17 +15,17 @@ It could be all of these items, or any subset of them.
 
 Fig. 1
 
-Please note that while you could implement it by simply hardcoding all those conditions, that is not what we looking for. You don't need to provide a way to update the workflow for this challenge, but we are looking for a design that is dynamic and would allow for updating any of the steps in the workflow.
+Please note that while you could implement it by simply hardcoding all those conditions, that is not what we are looking for. You don't need to provide a way to update the workflow for this challenge, but we are looking for a design that is dynamic and would allow for updating any of the steps in the workflow.
 
 ## Challenge requirements
 
-This is the list of things we want you to provide:
+This is the list of things you should provide:
 
 - A database model to support the workflow configuration and execution (a jpeg of the database schema can be put in the README file)
   - Don't worry about implementing this part, everything can be done in memory for the challenge, we only want to see how you would design the database to support this.
 
 - The logic to process the workflow described in the figure above and a http endpoint to call and execute the workflow:
-  - The endpoint should allow passing passing invoice amount, department and if a manager approval is required as input fields
+  - The endpoint should allow passing invoice amount, department and if a manager approval is required as input fields
   - Don't worry about the notification logic, simply printing `"sending approval via Slack"` is enough.
 
 - A simple UI to call the endpoint defined above and execute the workflow.
