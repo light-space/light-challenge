@@ -1,4 +1,4 @@
-package org.light.challenge.app
+package org.light.challenge.rest
 
 import javax.ws.rs.Consumes
 import javax.ws.rs.POST
