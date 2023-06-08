@@ -2,10 +2,10 @@
 At Light, we want to implement the best in class invoice approval workflow application.
 Every time one of our customers receives an invoice from a vendor, an approval request is sent to one more employees (approvers).
 
-The decision making about whom to send the approval request can only be based of the following 
-- the invoice amount 
-- department the invoice is sent to
-- whether the invoice requires manager approval
+The decision making about whom to send the approval request can only be based of the following:
+- the invoice amount.
+- department the invoice is sent to.
+- whether the invoice requires manager approval.
 
 It could be all of these items, or any subset of them.
 
@@ -24,11 +24,13 @@ This is the list of things you should provide:
 - A database model to support the workflow configuration and execution (a jpeg of the database schema can be put in the README file)
   - Don't worry about implementing this part, everything can be done in memory for the challenge, we only want to see how you would design the database to support this.
 
-- The logic to process the workflow described in the figure above and a http endpoint to call and execute the workflow:
-  - The endpoint should allow passing invoice amount, department and if a manager approval is required as input fields
+- The logic to process the workflow described in the figure above and an http endpoint to call and execute the workflow:
+  - The endpoint should allow passing invoice amount, department and if a manager approval is required as input fields.
   - Don't worry about the notification logic, simply printing `"sending approval via Slack"` is enough.
 
 - A simple UI to call the endpoint defined above and execute the workflow.
+
+Don't worry about currency support, you can assume everything is in USD.
 
 Any other consideration and things you would do better/different in a real world scenario feel free to put in the README, no need to implement it.
 
