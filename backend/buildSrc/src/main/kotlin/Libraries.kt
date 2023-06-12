@@ -7,10 +7,6 @@ object Libraries {
 
     const val mockk = "io.mockk:mockk:1.9.3"
 
-    const val exposed = "org.jetbrains.exposed:exposed:0.17.14"
-    const val h2_database = "com.h2database:h2:1.4.200"
-    const val sqlite_database = "org.xerial:sqlite-jdbc:3.39.3.0"
-
     const val dropwizard_core = "io.dropwizard:dropwizard-core:2.1.4"
     const val jackson_kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:2.14.0"
 }
