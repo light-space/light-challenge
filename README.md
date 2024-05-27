@@ -60,3 +60,7 @@ npm run dev
 
 The frontend server provides a proxy to the backend on the `/api` path so you don't run into CORS issues. It expects the backend to be running on port 8080. If you need to change that, update the config on `next.config.js`.
 
+### Submitting your implementation
+
+1. Run `git bundle create challenge-<your-name>.bundle --all`
+2. Send us the generated bundle file
