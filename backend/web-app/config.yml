@@ -1,7 +1,7 @@
 server:
-  applicationConnectors:
+  application_connectors:
     - type: http
       port: 8080
-  adminConnectors:
+  admin_connectors:
     - type: http
       port: 8081
