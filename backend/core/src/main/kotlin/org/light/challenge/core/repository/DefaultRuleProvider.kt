@@ -27,7 +27,7 @@ class DefaultRuleProvider {
             name = "Route High-Value Marketing Invoice to CMO",
             description = "Routes invoices over $10,000 for marketing purposes to the CMO via email.",
             priority = 100,
-            conditionExpression = "invoice.amount > 10000.23555B && invoice.department == 'marketing'",
+            conditionExpression = "invoice.amount > 10000B && invoice.department == 'marketing'",
             action = Action(
                 id = "send-email",
                 parameters = mapOf(
