@@ -12,8 +12,8 @@ dependencies {
     // Logging
     implementation(Libraries.microutils_logging)
 
-    // MVEL for rule evaluation
-    implementation(Libraries.mvel)
+    // Spring SpEL for rule evaluation
+    implementation(Libraries.spring_expression)
 
     // Caffeine cache
     implementation(Libraries.caffeine)

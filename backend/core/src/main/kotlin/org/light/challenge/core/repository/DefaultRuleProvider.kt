@@ -27,7 +27,7 @@ class DefaultRuleProvider {
             name = "Route High-Value Marketing Invoice to CMO",
             description = "Routes invoices over $10,000 for marketing purposes to the CMO via email.",
             priority = 100,
-            conditionExpression = "invoice.amount > 10000B && invoice.department == 'marketing'",
+            conditionExpression = "#invoice.amount > 10000 && #invoice.department == 'marketing'",
             action = Action(
                 id = "send-email",
                 parameters = mapOf(
@@ -45,7 +45,7 @@ class DefaultRuleProvider {
             name = "Route High-Value Non-Marketing Invoice to CFO",
             description = "Routes non-marketing invoices over $10,000 to the CFO via Slack.",
             priority = 90,
-            conditionExpression = "invoice.amount > 10000",
+            conditionExpression = "#invoice.amount > 10000",
             action = Action(
                 id = "send-slack",
                 parameters = mapOf(
@@ -62,7 +62,7 @@ class DefaultRuleProvider {
             name = "Route Mid-Value Invoice with Manager Approval",
             description = "Routes invoices between $5,001 and $10,000 requiring manager approval to a Finance Manager via email.",
             priority = 80,
-            conditionExpression = "invoice.amount > 5000 && invoice.amount <= 10000 && invoice.requiresManagerApproval == true",
+            conditionExpression = "#invoice.amount > 5000 && #invoice.amount <= 10000 && #invoice.requiresManagerApproval == true",
             action = Action(
                 id = "send-email",
                 parameters = mapOf(
@@ -80,7 +80,7 @@ class DefaultRuleProvider {
             name = "Route Mid-Value Standard Invoice to Finance Team",
             description = "Routes invoices between $5,001 and $10,000 not requiring manager approval to the Finance team via Slack.",
             priority = 70,
-            conditionExpression = "invoice.amount > 5000 && invoice.amount <= 10000",
+            conditionExpression = "#invoice.amount > 5000 && #invoice.amount <= 10000",
             action = Action(
                 id = "send-slack",
                 parameters = mapOf(
@@ -97,7 +97,7 @@ class DefaultRuleProvider {
             name = "Route Low-Value Invoice to Finance Team",
             description = "Routes invoices for $5,000 or less directly to the Finance team via Slack.",
             priority = 60,
-            conditionExpression = "invoice.amount <= 5000",
+            conditionExpression = "#invoice.amount <= 5000",
             action = Action(
                 id = "send-slack",
                 parameters = mapOf(

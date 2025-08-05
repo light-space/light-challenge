@@ -2,7 +2,7 @@ package org.light.challenge.core.engine.api
 
 /**
  * Container for facts used in rule evaluation.
- * Facts are key-value pairs accessible to MVEL expressions.
+ * Facts are key-value pairs accessible to condition expressions.
  */
 class Facts {
     private val factMap: MutableMap<String, Any> = mutableMapOf()
@@ -27,7 +27,7 @@ class Facts {
     fun hasFact(name: String): Boolean = factMap.containsKey(name)
 
     /**
-     * Returns all facts as a map for MVEL evaluation.
+     * Returns all facts as a map for expression evaluation.
      */
     fun toMap(): Map<String, Any> = factMap.toMap()
 
