@@ -15,7 +15,7 @@ dependencies {
     // Logging
     implementation(Libraries.microutils_logging)
 
-    // Dropwizard
+    // Dropwizard (includes its own logging)
     implementation(Libraries.dropwizard_core)
     implementation(Libraries.jackson_kotlin)
 

@@ -3,6 +3,8 @@ package org.light.challenge.rest
 import org.light.challenge.api.WorkflowErrorType
 import org.light.challenge.api.WorkflowRequest
 import org.light.challenge.api.WorkflowService
+import org.light.challenge.api.RuleGenerationService
+import org.light.challenge.api.RuleGenerationRequest
 import javax.inject.Inject
 import javax.ws.rs.Consumes
 import javax.ws.rs.POST
@@ -15,7 +17,8 @@ import javax.ws.rs.core.Response
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 class WorkflowResource @Inject constructor(
-    private val workflowService: WorkflowService
+    private val workflowService: WorkflowService,
+    private val ruleGenerationService: RuleGenerationService
 ) {
 
     @POST
@@ -52,6 +55,33 @@ class WorkflowResource @Inject constructor(
                 // 500 Internal Server Error - Unexpected case (should never happen)
                 Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(workflowResponse)
+                    .build()
+            }
+        }
+    }
+    
+    @POST
+    @Path("/generate-rules")
+    fun generateRules(request: RuleGenerationRequest): Response {
+        val response = ruleGenerationService.generateRules(request)
+        
+        return when {
+            response.success -> {
+                // 200 OK - Successfully generated rules
+                Response.ok(response).build()
+            }
+            
+            response.error?.contains("Invalid request") == true -> {
+                // 400 Bad Request - Invalid input data
+                Response.status(Response.Status.BAD_REQUEST)
+                    .entity(response)
+                    .build()
+            }
+            
+            else -> {
+                // 500 Internal Server Error - Rule generation failed
+                Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity(response)
                     .build()
             }
         }

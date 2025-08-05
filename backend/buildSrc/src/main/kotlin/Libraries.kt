@@ -3,8 +3,10 @@ object Libraries {
     const val junit_jupiter_engine = "org.junit.jupiter:junit-jupiter-engine:5.8.1"
     const val junit_jupiter_params = "org.junit.jupiter:junit-jupiter-params:5.8.1"
 
-    const val log4j_over_slf4j = "org.slf4j:log4j-over-slf4j:1.7.32"
+    const val log4j_over_slf4j = "org.slf4j:log4j-over-slf4j:2.0.16"
     const val microutils_logging = "io.github.microutils:kotlin-logging:1.7.8"
+    const val logback_classic = "ch.qos.logback:logback-classic:1.3.14"
+    const val slf4j_api = "org.slf4j:slf4j-api:2.0.16"
 
     const val mockk = "io.mockk:mockk:1.9.3"
 
@@ -12,4 +14,12 @@ object Libraries {
     const val jackson_kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:2.14.0"
     const val spring_expression = "org.springframework:spring-expression:6.1.0"
     const val caffeine = "com.github.ben-manes.caffeine:caffeine:3.1.1"
+    
+    // Koog AI for LLM agents
+    const val koog_agents = "ai.koog:koog-agents:0.3.0"
+    
+    const val kotlinx_serialization_json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
+    
+    // Coroutines for async operations
+    const val kotlinx_coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
 }
