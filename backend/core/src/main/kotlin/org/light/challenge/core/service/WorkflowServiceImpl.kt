@@ -24,20 +24,15 @@ class WorkflowServiceImpl(
     override fun executeWorkflow(request: WorkflowRequest): WorkflowResponse {
         val workflowExecutionId = UUID.randomUUID()
 
-        logger.info { "Executing workflow [${workflowExecutionId}] for invoice: amount=${request.amount}, department=${request.department}, requiresManagerApproval=${request.requiresManagerApproval}" }
+        logger.info { "Executing workflow [${workflowExecutionId}] for invoice: amount=${request.amount}, department=${request.department}" }
 
         return try {
-            // Invoice validation happens here - will throw IllegalArgumentException if invalid
             val facts = createFacts(request)
             val rules = ruleRepository.getAllRules()
             val results = ruleEngine.evaluate(rules, facts, actionExecutor)
 
-            logger.info { "Workflow [${workflowExecutionId}] completed with ${results.size} rule evaluations" }
-            // we can save results for debugging and tracing.
-
             createResponse(results, workflowExecutionId)
         } catch (e: IllegalArgumentException) {
-            // Validation errors from Invoice creation
             logger.warn { "Workflow [${workflowExecutionId}] validation failed: ${e.message}" }
             createValidationErrorResponse(e.message ?: "Invalid request data", workflowExecutionId)
         } catch (e: Exception) {
@@ -46,91 +41,88 @@ class WorkflowServiceImpl(
         }
     }
 
-    /**
-     * Creates facts from the workflow request.
-     * Invoice validation occurs here and throws IllegalArgumentException if invalid.
-     */
     private fun createFacts(request: WorkflowRequest): Facts {
         val invoice = Invoice(
             amount = request.amount,
             department = request.department,
             requiresManagerApproval = request.requiresManagerApproval
         )
-
         return Facts().withFact("invoice", invoice)
     }
 
-    /**
-     * Creates workflow response from rule results.
-     */
     private fun createResponse(
         results: List<RuleResult>,
         workflowExecutionId: UUID
     ): WorkflowResponse {
-        val successfulResult =
-            results.firstOrNull { it.matched && it.actionResult?.success == true }
-
-        return when {
-            successfulResult != null -> {
-                logger.info { "Workflow [${workflowExecutionId}] succeeded with rule [${successfulResult.rule.id}] result [${successfulResult.id}]" }
-                WorkflowResponse(
-                    success = true,
-                    message = successfulResult.actionResult?.message
-                        ?: "Action executed successfully",
-                    tracing = TracingInfo(
-                        workflowExecutionId = workflowExecutionId,
-                        ruleResultId = successfulResult.id
-                    ),
-                    rule = RuleInfo(
-                        ruleId = successfulResult.rule.id,
-                        ruleName = successfulResult.rule.name
-                    )
-                )
-            }
-
-            results.any { it.matched } -> {
-                val failedResult = results.first { it.matched }
-                logger.error { "Workflow [${workflowExecutionId}] failed with rule [${failedResult.rule.id}] result [${failedResult.id}]: ${failedResult.error ?: failedResult.actionResult?.message}" }
-                WorkflowResponse(
-                    success = false,
-                    message = failedResult.actionResult?.message ?: failedResult.error
-                    ?: "Action execution failed",
-                    tracing = TracingInfo(
-                        workflowExecutionId = workflowExecutionId,
-                        ruleResultId = failedResult.id
-                    ),
-                    rule = RuleInfo(
-                        ruleId = failedResult.rule.id,
-                        ruleName = failedResult.rule.name
-                    ),
-                    error = ErrorInfo(
-                        type = WorkflowErrorType.SYSTEM_ERROR,
-                        details = failedResult.error
-                    )
-                )
-            }
-
-            else -> {
-                logger.info { "Workflow [${workflowExecutionId}] completed with no matching rules" }
-                WorkflowResponse(
-                    success = false,
-                    message = "No rules matched the invoice criteria",
-                    tracing = TracingInfo(
-                        workflowExecutionId = workflowExecutionId,
-                        ruleResultId = null
-                    ),
-                    error = ErrorInfo(
-                        type = WorkflowErrorType.NO_RULES_MATCHED,
-                        details = "No applicable rules found for the provided invoice criteria"
-                    )
-                )
-            }
+        // First successful result wins
+        val successfulResult = results.firstOrNull { it.isSuccessful }
+        if (successfulResult != null) {
+            return createSuccessResponse(successfulResult, workflowExecutionId)
         }
+
+        // Check for evaluation errors
+        val evaluationFailure = results.firstOrNull { it.evaluationError != null }
+        if (evaluationFailure != null) {
+            return createEvaluationErrorResponse(evaluationFailure, workflowExecutionId)
+        }
+
+        // Check for action failures
+        val actionFailure = results.firstOrNull { it.isActionFailure }
+        if (actionFailure != null) {
+            return createActionFailureResponse(actionFailure, workflowExecutionId)
+        }
+
+        // No rules matched
+        return createNoMatchResponse(workflowExecutionId)
     }
 
-    /**
-     * Creates a validation error response.
-     */
+    private fun createSuccessResponse(
+        result: RuleResult,
+        workflowExecutionId: UUID
+    ): WorkflowResponse {
+        return WorkflowResponse(
+            success = true,
+            message = result.actionResult?.message ?: "Action executed successfully",
+            tracing = TracingInfo(workflowExecutionId, result.id),
+            rule = RuleInfo(result.rule.id, result.rule.name)
+        )
+    }
+
+    private fun createEvaluationErrorResponse(
+        result: RuleResult,
+        workflowExecutionId: UUID
+    ): WorkflowResponse {
+        return WorkflowResponse(
+            success = false,
+            message = "Rule evaluation failed: ${result.evaluationError}",
+            tracing = TracingInfo(workflowExecutionId, result.id),
+            rule = RuleInfo(result.rule.id, result.rule.name),
+            error = ErrorInfo(WorkflowErrorType.SYSTEM_ERROR, result.evaluationError)
+        )
+    }
+
+    private fun createActionFailureResponse(
+        result: RuleResult,
+        workflowExecutionId: UUID
+    ): WorkflowResponse {
+        return WorkflowResponse(
+            success = false,
+            message = "Rule matched but action failed: ${result.actionResult?.message}",
+            tracing = TracingInfo(workflowExecutionId, result.id),
+            rule = RuleInfo(result.rule.id, result.rule.name),
+            error = ErrorInfo(WorkflowErrorType.SYSTEM_ERROR, result.actionResult?.message)
+        )
+    }
+
+    private fun createNoMatchResponse(workflowExecutionId: UUID): WorkflowResponse {
+        return WorkflowResponse(
+            success = false,
+            message = "No rules matched the invoice criteria",
+            tracing = TracingInfo(workflowExecutionId, null),
+            error = ErrorInfo(WorkflowErrorType.NO_RULES_MATCHED, "No applicable rules found")
+        )
+    }
+
     private fun createValidationErrorResponse(
         error: String,
         workflowExecutionId: UUID
@@ -138,20 +130,11 @@ class WorkflowServiceImpl(
         return WorkflowResponse(
             success = false,
             message = "Invalid request: $error",
-            tracing = TracingInfo(
-                workflowExecutionId = workflowExecutionId,
-                ruleResultId = null
-            ),
-            error = ErrorInfo(
-                type = WorkflowErrorType.VALIDATION_ERROR,
-                details = error
-            )
+            tracing = TracingInfo(workflowExecutionId, null),
+            error = ErrorInfo(WorkflowErrorType.VALIDATION_ERROR, error)
         )
     }
 
-    /**
-     * Creates a system error response.
-     */
     private fun createSystemErrorResponse(
         error: String,
         workflowExecutionId: UUID
@@ -159,14 +142,8 @@ class WorkflowServiceImpl(
         return WorkflowResponse(
             success = false,
             message = "Error executing workflow: $error",
-            tracing = TracingInfo(
-                workflowExecutionId = workflowExecutionId,
-                ruleResultId = null
-            ),
-            error = ErrorInfo(
-                type = WorkflowErrorType.SYSTEM_ERROR,
-                details = error
-            )
+            tracing = TracingInfo(workflowExecutionId, null),
+            error = ErrorInfo(WorkflowErrorType.SYSTEM_ERROR, error)
         )
     }
 } 

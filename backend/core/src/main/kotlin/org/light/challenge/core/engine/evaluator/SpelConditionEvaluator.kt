@@ -32,11 +32,11 @@ class SpelConditionEvaluator private constructor(
     override fun evaluateBoolean(condition: String, facts: Facts): Boolean {
         return try {
             logger.debug { "Evaluating SpEL condition: $condition" }
-            
+
             val compiledExpression = getCompiledExpression(condition)
             val evaluationContext = createEvaluationContext(facts)
             val result = compiledExpression.getValue(evaluationContext)
-            
+
             when (result) {
                 is Boolean -> result
                 else -> throw ConditionEvaluationException(
@@ -47,22 +47,8 @@ class SpelConditionEvaluator private constructor(
             throw e
         } catch (e: Exception) {
             logger.error(e) { "Error evaluating SpEL condition '$condition': ${e.message}" }
-            throw ConditionEvaluationException("Failed to evaluate condition '$condition'", e)
+            throw ConditionEvaluationException("Failed to evaluate condition '$condition': ${e.message}", e)
         }
-    }
-
-    override fun precompile(condition: String) {
-        try {
-            getCompiledExpression(condition)
-            logger.debug { "Precompiled SpEL condition: $condition" }
-        } catch (e: Exception) {
-            logger.warn(e) { "Failed to precompile SpEL condition '$condition': ${e.message}" }
-        }
-    }
-
-    override fun clearCache() {
-        expressionCache?.invalidateAll()
-        logger.debug { "Cleared SpEL expression cache" }
     }
 
     private fun getCompiledExpression(condition: String): Expression {
@@ -75,12 +61,12 @@ class SpelConditionEvaluator private constructor(
 
     private fun createEvaluationContext(facts: Facts): StandardEvaluationContext {
         val evaluationContext = StandardEvaluationContext()
-        
+
         // Set each fact as a variable in the evaluation context
         facts.toMap().forEach { (key, value) ->
             evaluationContext.setVariable(key, value)
         }
-        
+
         return evaluationContext
     }
 
@@ -104,7 +90,7 @@ class SpelConditionEvaluator private constructor(
                 .expireAfterWrite(expireAfter)
                 .recordStats()
                 .build<String, Expression>()
-            
+
             return SpelConditionEvaluator(cache, SpelExpressionParser())
         }
 

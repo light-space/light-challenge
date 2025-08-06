@@ -160,7 +160,7 @@ class RuleEngineTest {
         )
 
         // All results should have errors due to missing invoice fact
-        val errorResults = results.filter { it.error != null }
+        val errorResults = results.filter { it.evaluationError != null }
         assertTrue(errorResults.isNotEmpty(), "Should have error results when facts are malformed")
     }
 

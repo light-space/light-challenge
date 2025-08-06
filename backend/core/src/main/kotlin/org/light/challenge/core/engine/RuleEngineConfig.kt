@@ -2,7 +2,6 @@ package org.light.challenge.core.engine
 
 import org.light.challenge.core.engine.api.ConditionEvaluator
 import org.light.challenge.core.engine.evaluator.SpelConditionEvaluator
-import java.time.Duration
 
 /**
  * Configuration for RuleEngine behavior.
@@ -20,7 +19,8 @@ data class RuleEngineConfig(
         private var conditionEvaluator: ConditionEvaluator? = null
 
         fun stopAfterFirstMatch(stop: Boolean) = apply { this.stopAfterFirstMatch = stop }
-        fun conditionEvaluator(evaluator: ConditionEvaluator) = apply { this.conditionEvaluator = evaluator }
+        fun conditionEvaluator(evaluator: ConditionEvaluator) =
+            apply { this.conditionEvaluator = evaluator }
 
         fun build(): RuleEngineConfig {
             return RuleEngineConfig(
@@ -32,7 +32,7 @@ data class RuleEngineConfig(
 
     companion object {
         fun builder(): Builder = Builder()
-        
+
         fun default(): RuleEngineConfig = RuleEngineConfig()
     }
 }

@@ -1,18 +1,13 @@
 package org.light.challenge.core.engine
 
 import mu.KotlinLogging
-import org.light.challenge.core.engine.api.ActionExecutor
-import org.light.challenge.core.engine.api.ConditionEvaluator
-import org.light.challenge.core.engine.api.Facts
-import org.light.challenge.core.engine.api.Rule
-import org.light.challenge.core.engine.api.RuleResult
+import org.light.challenge.core.engine.api.*
 import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
 /**
  * Evaluates individual rules against facts.
- * Handles condition evaluation and action execution using pluggable evaluators.
  */
 class RuleEvaluator(
     private val actionExecutor: ActionExecutor,
@@ -23,22 +18,55 @@ class RuleEvaluator(
      * Evaluates a single rule against the given facts.
      */
     fun evaluate(rule: Rule, facts: Facts): RuleResult {
+        val ruleResultId = UUID.randomUUID()
+
         return try {
             logger.debug { "Evaluating rule: ${rule.id}" }
 
-            val conditionResult = conditionEvaluator.evaluateBoolean(rule.conditionExpression, facts)
+            val conditionMatched =
+                conditionEvaluator.evaluateBoolean(rule.conditionExpression, facts)
 
-            if (conditionResult) {
-                logger.info { "Rule ${rule.id} matched, executing action" }
+            if (conditionMatched) {
+                logger.debug { "Rule ${rule.id} matched, executing action" }
                 val actionResult = actionExecutor.execute(rule.action, facts)
-                RuleResult(UUID.randomUUID(), rule, true, actionResult, null)
+
+                RuleResult(
+                    id = ruleResultId,
+                    rule = rule,
+                    matched = true,
+                    evaluationError = null,
+                    actionResult = actionResult
+                )
             } else {
                 logger.debug { "Rule ${rule.id} did not match" }
-                RuleResult(UUID.randomUUID(), rule, false, null, null)
+                RuleResult(
+                    id = ruleResultId,
+                    rule = rule,
+                    matched = false,
+                    evaluationError = null,
+                    actionResult = null
+                )
             }
+        } catch (e: ConditionEvaluationException) {
+            // Only catch condition evaluation errors
+            logger.error(e) { "Error evaluating rule ${rule.id} condition: ${e.message}" }
+            RuleResult(
+                id = ruleResultId,
+                rule = rule,
+                matched = false,
+                evaluationError = "Condition evaluation failed: ${e.message}",
+                actionResult = null
+            )
         } catch (e: Exception) {
-            logger.error(e) { "Error evaluating rule ${rule.id}: ${e.message}" }
-            RuleResult(UUID.randomUUID(), rule, false, null, e.message)
+            // Only catch action execution errors
+            logger.error(e) { "Error executing rule ${rule.id} action: ${e.message}" }
+            RuleResult(
+                id = ruleResultId,
+                rule = rule,
+                matched = false,
+                evaluationError = "Rule execution failed: ${e.message}",
+                actionResult = null
+            )
         }
     }
 } 

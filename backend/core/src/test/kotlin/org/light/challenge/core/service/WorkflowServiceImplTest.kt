@@ -48,7 +48,13 @@ class WorkflowServiceImplTest {
         )
 
         val actionResult = ActionResult.success("Email sent successfully")
-        val ruleResult = RuleResult(UUID.randomUUID(), rule, true, actionResult, null)
+        val ruleResult = RuleResult(
+            id = UUID.randomUUID(),
+            rule = rule,
+            matched = true,
+            evaluationError = null,
+            actionResult = actionResult
+        )
 
         every { mockRuleRepository.getAllRules() } returns listOf(rule)
         every { mockRuleEngine.evaluate(any(), any<Facts>(), any()) } returns listOf(ruleResult)
@@ -92,7 +98,13 @@ class WorkflowServiceImplTest {
         )
 
         val actionResult = ActionResult.failure("Email sending failed")
-        val ruleResult = RuleResult(UUID.randomUUID(), rule, true, actionResult, null)
+        val ruleResult = RuleResult(
+            id = UUID.randomUUID(),
+            rule = rule,
+            matched = true,
+            evaluationError = null,
+            actionResult = actionResult
+        )
 
         every { mockRuleRepository.getAllRules() } returns listOf(rule)
         every { mockRuleEngine.evaluate(any(), any<Facts>(), any()) } returns listOf(ruleResult)
@@ -102,7 +114,7 @@ class WorkflowServiceImplTest {
 
         // Then
         assertFalse(response.success)
-        assertEquals("Email sending failed", response.message)
+        assertEquals("Rule matched but action failed: Email sending failed", response.message)
         assertNotNull(response.rule)
         assertEquals("test-rule", response.rule!!.ruleId)
         assertEquals("Test Rule", response.rule!!.ruleName)
@@ -133,7 +145,13 @@ class WorkflowServiceImplTest {
             )
         )
 
-        val ruleResult = RuleResult(UUID.randomUUID(), rule, false, null, null)
+        val ruleResult = RuleResult(
+            id = UUID.randomUUID(),
+            rule = rule,
+            matched = false,
+            evaluationError = null,
+            actionResult = null
+        )
 
         every { mockRuleRepository.getAllRules() } returns listOf(rule)
         every { mockRuleEngine.evaluate(any(), any<Facts>(), any()) } returns listOf(ruleResult)
@@ -197,7 +215,13 @@ class WorkflowServiceImplTest {
             )
         )
 
-        val ruleResult = RuleResult(UUID.randomUUID(), rule, true, null, "MVEL compilation error")
+        val ruleResult = RuleResult(
+            id = UUID.randomUUID(),
+            rule = rule,
+            matched = false,  // Rule evaluation failed
+            evaluationError = "MVEL compilation error",
+            actionResult = null
+        )
 
         every { mockRuleRepository.getAllRules() } returns listOf(rule)
         every { mockRuleEngine.evaluate(any(), any<Facts>(), any()) } returns listOf(ruleResult)
@@ -207,7 +231,7 @@ class WorkflowServiceImplTest {
 
         // Then
         assertFalse(response.success)
-        assertEquals("MVEL compilation error", response.message)
+        assertEquals("Rule evaluation failed: MVEL compilation error", response.message)
         assertNotNull(response.rule)
         assertEquals("test-rule", response.rule!!.ruleId)
         assertEquals("Test Rule", response.rule!!.ruleName)
@@ -240,7 +264,13 @@ class WorkflowServiceImplTest {
         )
 
         val actionResult = ActionResult.success("Email sent successfully")
-        val ruleResult = RuleResult(UUID.randomUUID(), rule, true, actionResult, null)
+        val ruleResult = RuleResult(
+            id = UUID.randomUUID(),
+            rule = rule,
+            matched = true,
+            evaluationError = null,
+            actionResult = actionResult
+        )
 
         every { mockRuleRepository.getAllRules() } returns listOf(rule)
         every { mockRuleEngine.evaluate(any(), any<Facts>(), any()) } returns listOf(ruleResult)
