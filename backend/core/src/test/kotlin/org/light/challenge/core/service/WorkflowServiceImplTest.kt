@@ -219,7 +219,7 @@ class WorkflowServiceImplTest {
             id = UUID.randomUUID(),
             rule = rule,
             matched = false,  // Rule evaluation failed
-            evaluationError = "MVEL compilation error",
+            evaluationError = "SpEL compilation error",
             actionResult = null
         )
 
@@ -231,13 +231,13 @@ class WorkflowServiceImplTest {
 
         // Then
         assertFalse(response.success)
-        assertEquals("Rule evaluation failed: MVEL compilation error", response.message)
+        assertEquals("Rule evaluation failed: SpEL compilation error", response.message)
         assertNotNull(response.rule)
         assertEquals("test-rule", response.rule!!.ruleId)
         assertEquals("Test Rule", response.rule!!.ruleName)
         assertNotNull(response.error)
         assertEquals(WorkflowErrorType.SYSTEM_ERROR, response.error!!.type)
-        assertEquals("MVEL compilation error", response.error!!.details)
+        assertEquals("Spel compilation error", response.error!!.details)
         assertNotNull(response.tracing.workflowExecutionId)
         assertEquals(ruleResult.id, response.tracing.ruleResultId)
     }

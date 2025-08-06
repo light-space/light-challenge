@@ -10,7 +10,6 @@ object Libraries {
 
     const val dropwizard_core = "io.dropwizard:dropwizard-core:2.1.4"
     const val jackson_kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:2.14.0"
-    const val mvel = "org.mvel:mvel2:2.5.2.Final"
     const val spring_expression = "org.springframework:spring-expression:6.1.0"
     const val caffeine = "com.github.ben-manes.caffeine:caffeine:3.1.1"
 }
